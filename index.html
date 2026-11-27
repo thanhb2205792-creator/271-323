@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Thi Sát Hạch CNTT - Phần 10 (Câu 271-323)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            font-size: 22px;
+        }
+        .question-block {
+            background: #fafafa;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #0d6efd;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-label:hover {
+            background: #f1f7ff;
+            border-color: #0d6efd;
+        }
+        .option-label input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 15px;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-submit { background: #0d6efd; }
+        .btn-submit:hover { background: #0b5ed7; }
+        
+        .btn-retry-failed { 
+            background: #dc3545; 
+            display: none; 
+        }
+        .btn-retry-failed:hover { background: #bb2d3b; }
+
+        .result-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #e2e3e5;
+            border: 2px solid #6c757d;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #383d41;
+        }
+        .correct-answer {
+            background: #d1e7dd !important;
+            border-color: #198754 !important;
+            font-weight: bold;
+            color: #0f5132;
+        }
+        .wrong-answer {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>BỘ CÂU HỎI ÔN THI SÁT HẠCH CNTT (CÂU 271 - 323)</h1>
+    <div id="quiz"></div>
+    
+    <div id="result" class="result-box"></div>
+
+    <div class="action-buttons">
+        <button class="btn btn-submit" id="submit-btn" onclick="checkAnswers()">Nộp bài & Xem kết quả</button>
+        <button class="btn btn-retry-failed" id="retry-btn" onclick="filterWrongQuestions()">Làm lại các câu sai</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "Trong MS PowerPoint, âm thanh đưa vào bài trình diễn:",
+        a: ["Không thực hiện được cả khi tạo hiệu ứng động và hiệu ứng chuyển trang.", "Thực hiện được chỉ khi tạo hiệu ứng chuyển trang giữa các slide.", "Thực hiện được chỉ khi tạo hiệu ứng động cho đối tượng trong slide.", "Thực hiện được cả khi tạo hiệu ứng động và hiệu ứng chuyển trang."],
+        correct: 3
+    },
+    {
+        q: "Hãy chỉ ra tổ hợp phím không cùng loại trong MS Word:",
+        a: ["Ctrl + P", "Ctrl + L", "Ctrl + J", "Ctrl + E"],
+        correct: 0
+    },
+    {
+        q: "Trong hệ điều hành Windows, thao tác Drag and Drop (kéo thả chuột) được sử dụng khi ta:",
+        a: ["Di chuyển đối tượng đến vị trí mới.", "Xem thuộc tính của tệp hiện tại.", "Mở thư mục.", "Thay đổi màu nền cho cửa sổ hiện hành."],
+        correct: 0
+    },
+    {
+        q: "Trong MS Word, tổ hợp phím Ctrl + ] dùng để:",
+        a: ["Tăng cỡ chữ (mỗi lần tăng lên 1 cỡ chữ)", "Giảm cỡ chữ (mỗi lần giảm đi 2 cỡ chữ)", "Tăng cỡ chữ (mỗi lần tăng lên 2 cỡ chữ)", "Giảm cỡ chữ (mỗi lần giảm đi 1 cỡ chữ)"],
+        correct: 0
+    },
+    {
+        q: "Trong MS Word, để tăng cỡ chữ (tạo chữ to) như ý, sau khi quét chọn khối văn bản, ta thực hiện:",
+        a: ["Nhấn ALT + [", "Nhấn CTRL + [", "Nhấn ALT + ]", "Nhấn CTRL + ]"],
+        correct: 3
+    },
+    {
+        q: "PowerPoint cho phép người sử dụng thiết kế một slide chủ chứa các định dạng chung của toàn bộ các slide trong bài trình diễn. Để thực hiện điều này, người dùng phải :",
+        a: ["View; Slide Master.", "View; Master; Slide Master.", "Insert; Master Slide.", "Insert; Slide Master."],
+        correct: 0
+    },
+    {
+        q: "Trong hệ điều hành Windows, muốn đóng (thoát) cửa sổ chương trình ứng dụng đang làm việc ta:",
+        a: ["Alt + F4", "Ctrl + F3", "Alt + F3", "Shift + F4"],
+        correct: 0
+    },
+    {
+        q: "Điều nào sau đây được sử dụng để lưu trữ các chương trình ban đầu được sử dụng để khởi động máy tính khi lần đầu tiên được bật?",
+        a: ["RAM", "ROM", "CD", "Đĩa cứng"],
+        correct: 1
+    },
+    {
+        q: "Trong Excel muốn chuyển đổi giữa địa chỉ tương đối và địa chỉ tuyệt đối trong công thức, ta sử dụng phím:",
+        a: ["F5", "F3", "F2", "F4"],
+        correct: 3
+    },
+    {
+        q: "Điều nào sau đây không phải là một hệ điều hành ?",
+        a: ["Window", "GUI", "UNIX", "DOS"],
+        correct: 1
+    },
+    {
+        q: "Ngoài việc tạo hiệu ứng cho các đối tượng trên Slide ta có thể tạo hiệu ứng xuất hiện của từng Slide bằng lệnh:",
+        a: ["Action Button.", "Không thể thực hiện được", "Transitions.", "Animations Slide"],
+        correct: 2
+    },
+    {
+        q: "Trong bảng tính Excel, tại ô A2 gõ vào công thức =IF(3>5,100,IF(5<6,200,300)) thì kết quả nhận được tại ô A2 là:",
+        a: ["200", "100", "FALSE", "300"],
+        correct: 0
+    },
+    {
+        q: "Loại phần mềm phải được cài đặt trên một máy tính để quản lý tập tin và thực hiện các hoạt động máy tính cơ bản khác?",
+        a: ["ứng dụng", "hệ điều hành", "mạng", "tiện ích"],
+        correct: 1
+    },
+    {
+        q: "Thông tin nào sẽ ảnh hưởng ít nhất đến sự riêng tư cá nhân của bạn nếu bạn đăng tải thông tin đó trên 1 diễn đàn trực tuyến",
+        a: ["Thành phố nơi bạn sinh ra", "Tên của bạn", "Đường dẫn đến các trang web bạn thích", "Địa chỉ e-mail"],
+        correct: 2
+    },
+    {
+        q: "Phương thức phân phối phần mềm nào là miễn phí và có sẵn cho bản thử nghiệm nhưng cần phải trả phí cho ai đó khi mà sử dụng nó lâu dài?",
+        a: ["Nguồn mở", "Miễn phí", "Chia sẻ (Miễn phí dùng thử, trả tiền khi dùng lâu dài)", "Nâng cấp"],
+        correct: 2
+    },
+    {
+        q: "Phương thức thông tin nào giúp 1 nhóm người có thể gặp mặt đồng thời trong thời gian làm việc",
+        a: ["viết blog", "thư điện tử", "cung cấp thông tin trực tuyến", "đàm thoại truyền hình"],
+        correct: 3
+    },
+    {
+        q: "Bạn sẽ làm gì trước khi tặng máy tính không sử dụng trong một trường học hoặc 1 tổ chức từ thiện",
+        a: ["Xóa hết các thông tin cá nhân khỏi ổ cứng", "Đảm bảo máy tính làm việc được với máy in do trường hoặc nơi nhận máy", "Tải xuống phiên bản mới nhất", "Cài đặt tất cả các bản cần thiết của hệ điều hành"],
+        correct: 0
+    },
+    {
+        q: "Theo bạn, điều gì mà tất cả các virus tin học đều cố thực hiện?",
+        a: ["Phá hủy CMOS.", "Lây nhiễm vào boot record.", "Tự nhân bản.", "Xóa các tệp chương trình trên đĩa cứng."],
+        correct: 2
+    },
+    {
+        q: "Các công cụ pháp lý để điều chỉnh việc sử dụng hay phân phối lại phần mềm là gì?",
+        a: ["Bản quyền, Giấy phép phần mềm", "Lưu ý pháp lý phần mềm", "Hợp đồng phần mềm", "Luật phần mềm"],
+        correct: 0
+    },
+    {
+        q: "Trong MS Word, bôi đen một cụm từ trong văn bản đang soạn thảo rồi lần lượt thực hiện thao tác. Nhấn tổ hợp phím Ctrl + I tiếp đến là Ctrl + U, cụm từ được bôi đen sẽ",
+        a: ["Được in nghiêng và gạch dưới", "Được in đậm", "Được gạch dưới", "Được in đậm và gạch dưới"],
+        correct: 0
+    },
+    {
+        q: "Khi đang ở chế độ trình chiếu (Slide Show), muốn quay về Slide trước đó ta thực hiện",
+        a: ["Nhấp chuột chọn Display Settings; Chọn Next Slide", "Nhấp chuột phải tại vị trí bất kỳ trên Slide; chọn Old Slide", "Nhấp chuột chọn Display Settings; Chọn Old Slide", "Nhấp chuột phải tại vị trí bất kỳ trên Slide; chọn Previous"],
+        correct: 3
+    },
+    {
+        q: "Cho biết kết quả của công thức: =MIN(MAX(4, 11, 8, 9, -4, -10), 30, ABS(-6))",
+        a: ["4", "-6", "6", "-10"],
+        correct: 2
+    },
+    {
+        q: "Trong mạng máy tính, thuật ngữ LAN có ý nghĩa là:",
+        a: ["Mạng không dây", "Mạng toàn cầu", "Mạng diện rộng", "Mạng cục bộ"],
+        correct: 3
+    },
+    {
+        q: "Thiết bị nào sau đây của máy tính không thuộc nhóm thiết bị xuất dữ liệu:",
+        a: ["Máy Projector", "Máy in", "Máy quét", "Màn hình"],
+        correct: 2
+    },
+    {
+        q: "Nếu bạn chọn bảng mã là Unicode, kiểu gõ là Vni (hay Telex) từ phần mềm gõ tiếng Việt (Unikey, VietKey) thì font chữ nào được sử dụng:",
+        a: ["TCVN3 (ABC).", ".Vntime.", "VNI-Times.", "Times New Roman."],
+        correct: 3
+    },
+    {
+        q: "Phương thức thông tin nào giúp 1 nhóm người có thể gặp mặt đồng thời trong thời gian làm việc",
+        a: ["cung cấp thông tin trực tuyến", "viết blog", "đàm thoại truyền hình", "thư điện tử"],
+        correct: 2
+    },
+    {
+        q: "Cho biết kết quả của công thức: =LEFT(\"TOI\")",
+        a: ["Công thức sai", "T", "TOI", "TO"],
+        correct: 1
+    },
+    {
+        q: "Trong môi trường Windows bạn có thể chạy cùng lúc:",
+        a: ["Chạy tối đa 4 chương trình", "Một chương trình duy nhất", "Chạy được 2 chương trình", "Nhiều chương trình"],
+        correct: 3
+    },
+    {
+        q: "Từ một tập tin thuyết trình MS PowerPoint có phần mở rộng .pptx tạo tập tin Video có phần mở rộng .mp4 ta thực hiện",
+        a: ["Không thể tạo được tập tin Video từ tập tin PowerPoint", "Chọn File\\Save As; Hội thoại Save As xuất hiện; chọn kiểu MPEG-4 Video (*.mp4) trong liệt kê thả của Save as Type; nhấp chọn nút lệnh Save", "Chọn File\\Export\\Create a Video sau đó đặt tên tập tin Video; nhấp nút lệnh Save", "Cả hai cách Save As (chọn MPEG-4 Video) và Export -> Create a Video đều đúng"],
+        correct: 3
+    },
+    {
+        q: "Trong MS PowerPoint, trong Slide có biểu bảng (Table), ở chế độ màn hình Normal, muốn tách các ô đã được chọn thành nhiều ô, ta thực hiện",
+        a: ["Xác định khối cần tách ô, nhấp chuột phải và chọn Split Cells...", "Xác định khối cần tách ô, chọn Layout trong Table Tools; Chọn Split Cells trong nhóm lệnh Merge", "Cả hai cách (nhấp chuột phải chọn Split Cells và vào Table Tools -> Layout -> Split Cells) đều đúng", "Cả hai cách trên đều sai"],
+        correct: 2
+    },
+    {
+        q: "Trong MS Excel, hàm nào sau đây cho phép đếm các giá trị thỏa mãn một điều kiện cho trước:",
+        a: ["SUMIF", "COUNTIF", "COUNT", "COUNTA"],
+        correct: 1
+    },
+    {
+        q: "Nút Back trên các trình duyệt Web là dùng để:",
+        a: ["Đi đến trang web tiếp theo", "Quay trở lại màn hình trước đó", "Quay trở lại cửa sổ trước đó", "Quay trở lại trang web trước đó"],
+        correct: 3
+    },
+    {
+        q: "Trong MS Word, để tăng cỡ chữ (tạo chữ to) như ý, sau khi quét chọn khối văn bản, ta thực hiện:",
+        a: ["Nhấn ALT + [", "Nhấn CTRL + ]", "Nhấn CTRL + [", "Nhấn ALT + ]"],
+        correct: 1
+    },
+    {
+        q: "Phát biểu nào về hệ điều hành máy tính cá nhân dưới đây là đúng:",
+        a: ["Là phần mềm phải có để máy tính cá nhân có thể hoạt động", "Là phần mềm cài sẵn trong mọi máy tính cá nhân", "Là phần mềm không được thay đổi trong máy tính cá nhân", "Là phần mềm ứng dụng"],
+        correct: 0
+    },
+    {
+        q: "Thông tin nào sẽ ảnh hưởng ít nhất đến sự riêng tư cá nhân của bạn nếu bạn đăng tải thông tin đó trên 1 diễn đàn trực tuyến",
+        a: ["Thành phố nơi bạn sinh ra", "Địa chỉ e-mail", "Đường dẫn đến các trang web bạn thích", "Tên của bạn"],
+        correct: 2
+    },
+    {
+        q: "Trong MS PowerPoint, muốn in 2 Slide trên một tờ giấy, thực hiện như sau",
+        a: ["Chọn Tab View\\Print; trong phần Settings chọn Handouts, nhấp vào 2 Slide", "Chọn Tab Home\\Print; trong phần Settings chọn Handouts, nhấp vào 2 Slide", "Chọn Tab File\\Print; trong phần Settings chọn nhập số 2 ô Slides", "Chọn Tab File\\Print; trong phần Settings chọn Handouts, nhấp vào 2 Slide"],
+        correct: 3
+    },
+    {
+        q: "Các tập tin sau khi được chọn và xoá bằng tổ hợp phím Shift+Delete:",
+        a: ["Chỉ có tệp văn bản .DOC là có thể hồi phục", "Có thể được hồi phục khi mở Recycle Bin", "Có thể được hồi phục khi mở My Computer", "Không thể hồi phục chúng được nữa"],
+        correct: 3
+    },
+    {
+        q: "Để xem một trang web, người ta gõ địa chỉ của trang web đó vào:",
+        a: ["Thanh địa chỉ của trình duyệt", "Thanh trạng thái của trình duyệt", "Thanh liên kết của trình duyệt", "Thanh công cụ chuẩn của trình duyệt"],
+        correct: 0
+    },
+    {
+        q: "Trong bảng tính MS Excel, điều kiện trong hàm IF được phát biểu dưới dạng một phép so sánh. Khi cần so sánh đồng thời thỏa nhiều điều kiện thì sử dụng công thức nào:",
+        a: ["NOT", "&", "AND", "OR"],
+        correct: 2
+    },
+    {
+        q: "Trong Excel, hàm MONTH(\"09-Jan-2008\") cho kết quả:",
+        a: ["09", "2008", "1", "10"],
+        correct: 2
+    },
+    {
+        q: "Thuật ngữ Wi-Fi có nghĩa là",
+        a: ["Phương thức kết nối Internet không dây", "Virus máy tính", "Phương thức kết nối mạng xã hội", "Phương thức mạng cục bộ"],
+        correct: 0
+    },
+    {
+        q: "Trong MS PowerPoint, muốn chuyển (dịch) một đoạn văn bản từ ngôn ngữ Tiếng Việt sang ngôn ngữ Tiếng Anh, ta thực hiện",
+        a: ["Xác định khối văn bản cần chuyển sang ngôn ngữ Tiếng Anh; Nhấp chuột phải chọn lệnh Translate", "Không thực hiện được việc chuyển (dịch) một đoạn văn bản từ ngôn ngữ Tiếng Việt sang ngôn ngữ Tiếng Anh trong MS PowerPoint", "Cả hai cách (nhấp chuột phải chọn Translate và vào Tab Review -> Language -> Translate -> Translate Selected Text) đều đúng", "Xác định khối văn bản cần chuyển sang ngôn ngữ Tiếng Anh; Chọn Tab Review; Nhấp chọn Translate trong nhóm lệnh Language; Chọn Translate Selected Text"],
+        correct: 2
+    },
+    {
+        q: "Thuật ngữ MultiMedia là:",
+        a: ["Truyền thông đa phương tiện", "Truyền thông qua hình ảnh", "Phương tiện truyền thông", "Phương tiện di động"],
+        correct: 0
+    },
+    {
+        q: "Cho dữ liệu ở các ô như sau: A1=\"Chao ban\"; A2=\"A\"; A3; A4 không có dữ liệu; A5=\"B\"; A6=\"C\". Cho biết kết quả của công thức: =COUNTA(A1:A6)",
+        a: ["6", "4", "2", "1"],
+        correct: 1
+    },
+    {
+        q: "Cho biết đâu là địa chỉ của một trang web trên mạng Internet ?",
+        a: ["www.Vnexpress.net", "D:\\google\\download", "Tất cả đều đúng", "tamsu@vnexpress.net"],
+        correct: 0
+    },
+    {
+        q: "Trong MS PowerPoint, tại một slide ta dùng tổ hợp phím nào sau đây sẽ xoá slide đó?",
+        a: ["Ctrl + Delete.", "ALT + Shift + Delete.", "Shift + Delete.", "ALT + Delete."],
+        correct: 2
+    },
+    {
+        q: "Trong MS PowerPoint, Ở chế độ màn hình Normal, trong Slide có biểu bảng (Table), muốn điều chỉnh một số cột trong bảng có độ rộng đều nhau, ta thực hiện",
+        a: ["Xác định các cột muốn điều chỉnh độ rộng đều với nhau; Chọn Layout trong Table Tools; Chọn Distribute Columns trong nhóm Cell Size", "Cả các phương án trên đều sai", "Xác định các cột muốn điều chỉnh độ rộng đều với nhau; Nhấp chuột phải; Chọn Distribute Columns", "Xác định các cột muốn điều chỉnh độ rộng đều với nhau; Chọn Design trong Table Tools; Chọn Distribute Columns trong nhóm Table Style Options"],
+        correct: 0
+    },
+    {
+        q: "Bạn sẽ làm gì trước khi tặng máy tính không sử dụng trong một trường học hoặc 1 tổ chức từ thiện",
+        a: ["Cài đặt tất cả các bản cần thiết của hệ điều hành", "Tải xuống phiên bản mới nhất", "Xóa hết các thông tin cá nhân khỏi ổ cứng", "Đảm bảo máy tính làm việc được với máy in do trường hoặc nơi nhận máy"],
+        correct: 2
+    },
+    {
+        q: "Trong MS Word, bôi đen một cụm từ trong văn bản đang soạn thảo rồi lần lượt thực hiện thao tác. Nhấn tổ hợp phím Ctrl + I tiếp đến là Ctrl + U, cụm từ được bôi đen sẽ",
+        a: ["Được in đậm", "Được in nghiêng và gạch dưới", "Được in đậm và gạch dưới", "Được gạch dưới"],
+        correct: 1
+    },
+    {
+        q: "Sau khi đã lưu bài thuyết trình, để thoát khỏi ứng dụng MS PowerPoint ta thực hiện",
+        a: ["Gõ tổ hợp phím Alt+F4", "Nhấp vào nút Close (X) của thanh tiêu đề", "Nhấp 2 lần chuột liên tiếp vào biểu tượng của ứng dụng PowerPoint bên góc trái của thanh tiêu đề", "Tất cả đều đúng"],
+        correct: 3
+    },
+    {
+        q: "Trong cửa sổ Windows, Menu bar là:",
+        a: ["Thanh trạng thái", "Thanh địa chỉ", "Thanh tiêu đề", "Thanh thực đơn"],
+        correct: 3
+    },
+    {
+        q: "Trong MS Excel, để đặt tên cho một vùng dữ liệu đã chọn, ta sử dụng chức năng:",
+        a: ["Label", "Define Name", "Create Name", "Range Name"],
+        correct: 1
+    },
+    {
+        q: "Trong MS PowerPoint, để tạo bảng trong Slide trắng (Blank), ta thực hiện",
+        a: ["Chọn Tab Insert; nhấp chọn Table trong nhóm Tables; Chọn Insert Table...", "Chọn Tab Design; nhấp chọn Table trong nhóm Tables; Chọn Insert Table...", "Nhấp chuột phải tại vị trí bất kỳ trong Slide; Chọn Grid and Guides...", "Chọn Tab Home; nhấp chọn Table trong nhóm Tables; Chọn Insert Table..."],
+        correct: 0
+    }
+];
+
+let shuffledQuizData = [];
+let wrongQuestionIndexes = [];
+
+function prepareQuizData() {
+    shuffledQuizData = quizData.map((item) => {
+        let optionsWithMeta = item.a.map((optionText, index) => {
+            return { text: optionText, isCorrect: index === item.correct };
+        });
+
+        for (let i = optionsWithMeta.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optionsWithMeta[i], optionsWithMeta[j]] = [optionsWithMeta[j], optionsWithMeta[i]];
+        }
+
+        let newCorrectIndex = optionsWithMeta.findIndex(opt => opt.isCorrect);
+
+        return {
+            q: item.q,
+            a: optionsWithMeta.map(opt => opt.text),
+            correct: newCorrectIndex
+        };
+    });
+}
+
+function loadQuiz() {
+    const quizContainer = document.getElementById('quiz');
+    let output = '';
+
+    shuffledQuizData.forEach((item, qIndex) => {
+        const questionNumber = qIndex + 271; 
+        output += `
+            <div class="question-block" id="q-block-${qIndex}">
+                <div class="question-text">Câu ${questionNumber}: ${item.q}</div>
+                <div class="options">
+        `;
+        
+        item.a.forEach((option, oIndex) => {
+            const prefix = String.fromCharCode(97 + oIndex); 
+            output += `
+                <label class="option-label" id="label-${qIndex}-${oIndex}">
+                    <input type="radio" name="question${qIndex}" value="${oIndex}">
+                    ${prefix}. ${option}
+                </label>
+            `;
+        });
+
+        output += `
+                </div>
+            </div>
+        `;
+    });
+
+    quizContainer.innerHTML = output;
+}
+
+function checkAnswers() {
+    let score = 0;
+    wrongQuestionIndexes = []; 
+
+    shuffledQuizData.forEach((item, qIndex) => {
+        const block = document.getElementById(`q-block-${qIndex}`);
+        if (block.style.display === 'none') return; 
+
+        const selected = document.querySelector(`input[name="question${qIndex}"]:checked`);
+        
+        item.a.forEach((_, oIndex) => {
+            document.getElementById(`label-${qIndex}-${oIndex}`).classList.remove('correct-answer', 'wrong-answer');
+        });
+
+        document.getElementById(`label-${qIndex}-${item.correct}`).classList.add('correct-answer');
+
+        if (selected) {
+            const answerIndex = parseInt(selected.value);
+            if (answerIndex === item.correct) {
+                score++;
+            } else {
+                document.getElementById(`label-${qIndex}-${answerIndex}`).classList.add('wrong-answer');
+                wrongQuestionIndexes.push(qIndex);
+            }
+        } else {
+            wrongQuestionIndexes.push(qIndex);
+        }
+    });
+
+    const totalQuestionsInTurn = document.querySelectorAll('.question-block:not([style*="display: none"])').length;
+    const resultBox = document.getElementById('result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `Kết quả lượt này: Đúng ${score}/${totalQuestionsInTurn} câu!`;
+
+    const retryBtn = document.getElementById('retry-btn');
+    if (wrongQuestionIndexes.length > 0) {
+        retryBtn.style.display = 'block';
+    } else {
+        retryBtn.style.display = 'none';
+        resultBox.innerHTML += " 🎉 Tuyệt vời! Bạn đã hoàn thành chính xác tất cả các câu hỏi!";
+    }
+    
+    resultBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+function filterWrongQuestions() {
+    shuffledQuizData.forEach((item, qIndex) => {
+        const block = document.getElementById(`q-block-${qIndex}`);
+        
+        if (wrongQuestionIndexes.includes(qIndex)) {
+            block.style.display = 'block';
+
+            let currentOptions = item.a.map((text, idx) => {
+                return { text: text, isCorrect: idx === item.correct };
+            });
+            for (let i = currentOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentOptions[i], currentOptions[j]] = [currentOptions[j], currentOptions[i]];
+            }
+            item.a = currentOptions.map(o => o.text);
+            item.correct = currentOptions.findIndex(o => o.isCorrect);
+
+            const optionsContainer = block.querySelector('.options');
+            let optionsHTML = '';
+            item.a.forEach((option, oIndex) => {
+                const prefix = String.fromCharCode(97 + oIndex);
+                optionsHTML += `
+                    <label class="option-label" id="label-${qIndex}-${oIndex}">
+                        <input type="radio" name="question${qIndex}" value="${oIndex}">
+                        ${prefix}. ${option}
+                    </label>
+                `;
+            });
+            optionsContainer.innerHTML = optionsHTML;
+
+        } else {
+            block.style.display = 'none';
+        }
+    });
+
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('retry-btn').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+prepareQuizData();
+loadQuiz();
+</script>
+
+</body>
+</html>
